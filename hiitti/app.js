@@ -5,7 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var paperjs = require('paper');
-
+var http = require('http')
 var index = require('./routes/index');
 var users = require('./routes/users');
 
@@ -34,15 +34,36 @@ app.use(function(req, res, next) {
   next(err);
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+
+// Enable Socket.io
+var server = http.createServer(app).listen( app.get('port') );
+var io = require('socket.io').listen( server );
+
+// A user connects to the server (opens a socket)
+io.sockets.on('connection', function (socket) {
+
+
+  // A User starts a path
+  socket.on( 'startPath', function( data, sessionId ) {
+
+    socket.broadcast.emit( 'startPath', data, sessionId );
+
+  });
+
+  // A User continues a path
+  socket.on( 'continuePath', function( data, sessionId ) {
+
+    socket.broadcast.emit( 'continuePath', data, sessionId );
+
+  });
+
+  // A user ends a path
+  socket.on( 'endPath', function( data, sessionId ) {
+
+    socket.broadcast.emit( 'endPath', data, sessionId );
+
+  });  
+
 });
-
 module.exports = app;

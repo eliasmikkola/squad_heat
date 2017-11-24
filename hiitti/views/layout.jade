@@ -1,8 +1,11 @@
 doctype html
 html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    script(type='text/javascript', href='/javascripts/paper.js')
-  body
-    block content
+	head
+		title= title
+		link(rel='stylesheet', href='/stylesheets/style.css')
+		//- script(src="/socket.io/socket.io.js")
+		//- script(src="/javascripts/socket.js")
+		script(src="/javascripts/paper.js")
+
+	body(style="padding:0;")
+		block content
