@@ -1,5 +1,14 @@
 var count = 100;
 
+// Let's get layers working
+// var img = document.createElement('img');
+// img.src =  "../images/1.jpg";
+// // img.id = "background-crag";
+// // var layer = new paper.Layer();
+// var raster = new paper.Raster(img);
+// raster.height = "1000px";
+// raster.width = "1000px";
+
 // Create a symbol, which we will use to place instances of later:
 var path = new Path.Circle({
 	center: [0, 0],
@@ -7,6 +16,11 @@ var path = new Path.Circle({
 	fillColor: 'white',
 	strokeColor: 'black'
 });
+
+
+
+
+
 io.on( 'move', function( data ) {
   var item = project.activeLayer.children[0];
 			
@@ -22,7 +36,7 @@ io.on( 'move', function( data ) {
 	if (item.bounds.left > view.size.width) {
 		item.position.x = -item.bounds.width;
 	}
-})
+});
 
 var symbol = new Symbol(path);
 
@@ -33,7 +47,7 @@ for (var i = 0; i < count; i++) {
 	var placedSymbol = symbol.place(center);
 	// placedSymbol.scale(i / count);
 }
-console.log(project.activeLayer.children[0].id)
+console.log(project.activeLayer.children[0].id);
 
 // The onFrame function is called up to 60 times a second:
 function onFrame(event) {
