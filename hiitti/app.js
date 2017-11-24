@@ -27,23 +27,26 @@ app.use('/', index);
 app.use('/users', users);
 
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
+// // catch 404 and forward to error handler
+// app.use(function(req, res, next) {
+//   var err = new Error('Not Found');
+//   err.status = 404;
+//   next(err);
+// });
 
 
 
 // Enable Socket.io
-var server = http.createServer(app).listen( app.get('port') );
+var server = http.createServer(app).listen('3000');
 var io = require('socket.io').listen( server );
 
 // A user connects to the server (opens a socket)
 io.sockets.on('connection', function (socket) {
 
 
+	setInterval(function(){ 
+		socket.broadcast.emit( 'move', {x: 10});
+	}, 10);
   // A User starts a path
   socket.on( 'startPath', function( data, sessionId ) {
 

@@ -7,6 +7,22 @@ var path = new Path.Circle({
 	fillColor: 'white',
 	strokeColor: 'black'
 });
+io.on( 'move', function( data ) {
+  var item = project.activeLayer.children[0];
+			
+	// Move the item 1/20th of its width to the right. This way
+	// larger circles move faster than smaller circles:
+	item.position.y += item.bounds.width / 20;
+
+	// If the item has left the view on the right, move it back
+	// to the left:
+	if (item.bounds.bottom > view.size.height) {
+		item.position.y = -item.bounds.height;
+	}
+	if (item.bounds.left > view.size.width) {
+		item.position.x = -item.bounds.width;
+	}
+})
 
 var symbol = new Symbol(path);
 
