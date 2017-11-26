@@ -1,11 +1,33 @@
 doctype html
 html
-	head
-		title= title
-		link(rel='stylesheet', href='/stylesheets/style.css')
-		script(src="/socket.io/socket.io.js")
-		script(src="/javascripts/socket.js")
-		script(src="/javascripts/paper.js")
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto")
+    link(rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css")
+  body(style="padding:0;")
+html
+  head
+  body
+    main
+      .one One
+      |   
+      .two Two
+      |   
+      .three Three
+      |   
+      .four Four
+      |   
+      .five
+        block content
+        aside
+          h3 Map
+          p This map shows you something.
+      |   
+      .six Six
 
-	body(style="padding:0;")
-		block content
+    footer
+      p RIP™
+  script(src="/socket.io/socket.io.js")
+  script(src="/javascripts/socket.js")
+  script(src="/javascripts/paper.js")
