@@ -46,7 +46,7 @@ var players = {
 
 var keys = Object.keys(initPlayers)
 
-var playerIdToObjectId = {
+var playerIdToSymbolId = {
 
 }
 
@@ -62,77 +62,103 @@ var yLength = Math.abs(axis.yMin - axis.yMax)
 
 
 
-var move = function(obj) {
-		// var item = players[id]
-		var playerId = obj.recording_id 
-		var objId = playerIdToObjectId[playerId]
-		if(objId !== null && objId !== undefined){
-			var item = project.activeLayer.children.find(function(child){
-				return child.id === objId
-			})
-			if(item){
-				// console.log("ITEM FOUND", item)
-				var x = ((xLength/2 + obj.pos_x) / xLength)*400
-				var y = ((yLength/2 + obj.pos_y) / yLength)*400
-				var newPoint = new Point(x,y)
+// var move = function(obj) {
+// 		// var item = players[id]
+// 		var playerId = obj.recording_id 
+// 		var objId = playerIdToSymbolId[playerId]
+// 		if(objId !== null && objId !== undefined){
+// 			var item = project.activeLayer.children.find(function(child){
+// 				return child.id === objId
+// 			})
+// 			if(item){
+// 				// console.log("ITEM FOUND", item)
+// 				var x = ((xLength/2 + obj.pos_x) / xLength)*400
+// 				var y = ((yLength/2 + obj.pos_y) / yLength)*400
+// 				var newPoint = new Point(x,y)
 
-				// We add 1/30th of the vector to the position property
-				// of the text item, to move it in the direction of the
-				// destination point:
-				// console.log(item.position.x+ " --> "+x, item.position.y+ " --> "+y)
-				item.position = newPoint
-			}
-		}		
-}
+// 				// We add 1/30th of the vector to the position property
+// 				// of the text item, to move it in the direction of the
+// 				// destination point:
+// 				// console.log(item.position.x+ " --> "+x, item.position.y+ " --> "+y)
+// 				item.position = newPoint
+// 			}
+// 		}		
+// }
 
-for(var i=0; i<playerData.length; i++){
-	var step = playerData[i]
+// for(var i=0; i<playerData.length; i++){
+// 	var step = playerData[i]
 
-		// var step = playerData[i]
-		// var stamps = playerData[i]
-		// console.log(step)
-		var squadKeys = Object.keys(step)
-		for(var k=0; k<squadKeys.length;k++){
-			var squad = step[squadKeys[k]]
-			// console.log("squuad", squad)
-			var firstKeys = Object.keys(squad)
-			for(var j=0; j<firstKeys.length;j++){
-				var player = squad[firstKeys[j]]
-				// console.log("player", player)
-				var key = firstKeys[j]
-				// var player = step[i]
-				if(playerIdToObjectId[key] === undefined){
-					var x = ((xLength/2 + player.pos_x) / xLength)*400
-					var y = ((yLength/2 + player.pos_y) / yLength)*400
-					 var point = new Point(x, y)
-					 // console.log(point)
+// 		// var step = playerData[i]
+// 		// var stamps = playerData[i]
+// 		// console.log(step)
+// 		var squadKeys = Object.keys(step)
+// 		for(var k=0; k<squadKeys.length;k++){
+// 			var squad = step[squadKeys[k]]
+// 			// console.log("squuad", squad)
+// 			var firstKeys = Object.keys(squad)
+// 			for(var j=0; j<firstKeys.length;j++){
+// 				var player = squad[firstKeys[j]]
+// 				// console.log("player", player)
+// 				var key = firstKeys[j]
+// 				// var player = step[i]
+// 				if(playerIdToSymbolId[key] === undefined){
+// 					var x = ((xLength/2 + player.pos_x) / xLength)*400
+// 					var y = ((yLength/2 + player.pos_y) / yLength)*400
+// 					 var point = new Point(x, y)
+// 					 // console.log(point)
 
-					 if(squadKeys[k] === "squad1"){
-		 				var placedSymbol = symbol2.place(point);
-					 }
-					 else {
-		 				var placedSymbol = symbol.place(point);
+// 					 if(squadKeys[k] === "squad1"){
+// 		 				var placedSymbol = symbol2.place(point);
+// 					 }
+// 					 else {
+// 		 				var placedSymbol = symbol.place(point);
 
-					 }
-					 playerIdToObjectId[key] = placedSymbol.id
-					players[key] = placedSymbol
-				} else {
-					move(player)
-				}
+// 					 }
+// 					 playerIdToSymbolId[key] = placedSymbol.id
+// 					players[key] = placedSymbol
+// 				} else {
+// 					move(player)
+// 				}
 				
 				
-			}
-		}
+// 			}
+// 		}
+// }
+
+
+var drawTimeStamp = (data) => {
+	if(playerIdToSymbolId[key] === undefined){
+		var x = ((xLength/2 + data.x) / xLength)*400
+		var y = ((yLength/2 + data.y) / yLength)*400
+		var point = new Point(x, y)
+		 // console.log(point)
+
+		 if(data.squad === "squad1"){
+				var placedSymbol = symbol2.place(point);
+		 }
+		 else {
+				var placedSymbol = symbol.place(point);
+		 }
+		 playerIdToSymbolId[key].remove()
+		 delete playerIdToSymbolId[key];
+		 playerIdToSymbolId[key] = placedSymbol.id
+
+	}
 }
+
 	 
 
 console.log("view", view, project.activeLayer.children.length)
 
- 
+ io.on('timestamp', (data)=>{
+ 	data.forEach((action)=>{
+ 		drawTimeStamp(data)
+ 	})
+ })
 
 io.on('kill', function(id ) {
 		// var item = players[id]
-		var objId = playerIdToObjectId[id]
+		var objId = playerIdToSymbolId[id]
 		if(objId !== null && objId !== undefined){
 			var item = project.activeLayer.children.find(function(child){
 				return child.id === objId
@@ -150,7 +176,7 @@ io.on('kill', function(id ) {
 				radius: 2,
 				fillColor: 'green'
 			}
-			delete playerIdToObjectId[id]
+			delete playerIdToSymbolId[id]
 
 			item.remove()
 		}
